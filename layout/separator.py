@@ -40,7 +40,7 @@ class Ui_Dialog_Separator(object):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
         self.label_separator.setText(_translate("Dialog", "Change separator to:"))
-        self.push_button_ok_sep.setText(_translate("Dialog", "Ok"))
+        self.push_button_ok_sep.setText(_translate("Dialog", "OK"))
         self.push_button_cancel_sep.setText(_translate("Dialog", "Cancel"))
 
 

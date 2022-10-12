@@ -41,7 +41,6 @@ class OutlookForm(QMainWindow, QTableWidget):
         """"""
         self.data = None
         self.separator: str = ';'
-        self.list_of_emails = []
         self.show()
 
     def open_confirmation_dialog(self) -> None:
@@ -112,8 +111,12 @@ class OutlookForm(QMainWindow, QTableWidget):
         return item_from_list
 
     def add_data_to_listed_variables(self, item) -> None:
-        item_from_list = self.get_clicked_item_from_list(item)
-        self.ui.list_selected_variables.addItem(item_from_list)
+        try:
+            if len(self.ui.list_widget_columns.selectedItems()) > 0:
+                item_from_list = self.get_clicked_item_from_list(item)
+                self.ui.list_selected_variables.addItem(item_from_list)
+        except:
+            print(traceback.format_exc())
 
     def remove_item_from_selected_variables(self, item) -> None:
         item_from_list = self.get_clicked_item_from_list_of_variables(item)
@@ -156,7 +159,7 @@ class OutlookForm(QMainWindow, QTableWidget):
                 break
         return send_account, outlook
 
-    def create_list_of_mails_messages(self):
+    def create_list_of_mails_messages(self) -> list:
         list_of_mails = []
         sliced_data_frame = self.get_data_from_dataframe()
         variables_from_list, positions = self.find_matching_patterns_from_text
@@ -189,10 +192,13 @@ class OutlookForm(QMainWindow, QTableWidget):
                                                                           f'{"="*50}')
         for x in list_of_addresses:
             print(x)
+
+        for x in list_of_emails:
+            print(x)
         # for mail, address in zip(list_of_emails, list_of_addresses):
         #     mail_object = outlook.CreateItem(0)
         #     mail_object.To = address
-        #     mail_object.Subject = self.ui.line_edit_subject.text()
+        #     mail_object.Subject = mail_subject
         #     mail_object.Body = mail
         #     mail_object._oleobj_.Invoke(*(64209, 0, 8, 0, send_account))
         #     mail_object.Send()    # Sending emails to to the list of users
