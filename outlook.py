@@ -111,12 +111,9 @@ class OutlookForm(QMainWindow, QTableWidget):
         return item_from_list
 
     def add_data_to_listed_variables(self, item) -> None:
-        try:
-            if len(self.ui.list_widget_columns.selectedItems()) > 0:
-                item_from_list = self.get_clicked_item_from_list(item)
-                self.ui.list_selected_variables.addItem(item_from_list)
-        except:
-            print(traceback.format_exc())
+        if len(self.ui.list_widget_columns.selectedItems()) > 0:
+            item_from_list = self.get_clicked_item_from_list(item)
+            self.ui.list_selected_variables.addItem(item_from_list)
 
     def remove_item_from_selected_variables(self, item) -> None:
         item_from_list = self.get_clicked_item_from_list_of_variables(item)
