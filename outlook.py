@@ -123,19 +123,21 @@ class OutlookForm(QMainWindow, QTableWidget):
         self.ui.list_selected_variables.clear()
 
     def get_variables_from_list(self) -> List[str]:
-        variables_from_list = []
-        for i in range(self.ui.list_selected_variables.count()):
-            variables_from_list.append(self.ui.list_selected_variables.item(i).text())
-        return variables_from_list
+        if self.ui.list_selected_variables.count() > 0:
+            variables_from_list = []
+            for i in range(self.ui.list_selected_variables.count()):
+                variables_from_list.append(self.ui.list_selected_variables.item(i).text())
+            return variables_from_list
 
     def get_data_from_dataframe(self) -> pd.DataFrame:
-        variables_from_list = self.get_variables_from_list()
-        columns_to_slice_from_df = []
-        for variable in variables_from_list:
-            if variable in self.data.columns:
-                columns_to_slice_from_df.append(variable)
-        sliced_df = self.data[columns_to_slice_from_df]
-        return sliced_df
+        if isinstance(self.data, pd.DataFrame):
+            variables_from_list = self.get_variables_from_list()
+            columns_to_slice_from_df = []
+            for variable in variables_from_list:
+                if variable in self.data.columns:
+                    columns_to_slice_from_df.append(variable)
+            sliced_df = self.data[columns_to_slice_from_df]
+            return sliced_df
 
     @property
     def find_matching_patterns_from_text(self) -> Any:
@@ -178,20 +180,23 @@ class OutlookForm(QMainWindow, QTableWidget):
         return list_of_addresses
 
     def send_email(self):
-        list_of_emails = self.create_list_of_mails_messages()
-        list_of_addresses = self.get_email_addresses()
+        try:
+            list_of_emails = self.create_list_of_mails_messages()
+            list_of_addresses = self.get_email_addresses()
 
-        # send_account, outlook = self.find_sending_account()
-        self.confirmation_dialog.close()
-        self.open_sending_emails_info_dialog()
-        for address in list_of_addresses:
-            self.sending_email_dialog.ui.label_email_sending_info.setText(f'Email send to: {address}\n'
-                                                                          f'{"="*50}')
-        for x in list_of_addresses:
-            print(x)
+            # send_account, outlook = self.find_sending_account()
+            self.confirmation_dialog.close()
+            self.open_sending_emails_info_dialog()
+            for address in list_of_addresses:
+                self.sending_email_dialog.ui.label_email_sending_info.setText(f'Email send to: {address}\n'
+                                                                              f'{"="*50}')
+            for x in list_of_addresses:
+                print(x)
 
-        for x in list_of_emails:
-            print(x)
+            for x in list_of_emails:
+                print(x)
+        except:
+            QMessageBox.critical(self, 'Error', f'No data: \n{traceback.format_exc()}')
         # for mail, address in zip(list_of_emails, list_of_addresses):
         #     mail_object = outlook.CreateItem(0)
         #     mail_object.To = address
