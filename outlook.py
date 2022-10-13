@@ -4,6 +4,7 @@ import traceback
 from typing import Any, List
 
 import pandas as pd
+import numpy as np
 import win32com.client as win32
 from PyQt5.QtWidgets import QFileDialog, QTableWidget, QApplication, QTableWidgetItem
 
@@ -61,12 +62,14 @@ class OutlookForm(QMainWindow, QTableWidget):
         self.separator_dialog.close()
 
     def copy_selected_value_from_list_of_variables(self) -> None:
-        item = self.ui.list_selected_variables.currentItem().text()
-        QApplication.clipboard().setText(item)
+        if self.ui.list_selected_variables.count() > 0:
+            item = self.ui.list_selected_variables.currentItem().text()
+            QApplication.clipboard().setText(item)
 
     def copy_addresses(self, item) -> None:
-        addresses_column_name = self.get_clicked_item_from_list(item)
-        self.ui.line_edit_addresses.setText(addresses_column_name)
+        if self.ui.list_widget_columns.count() > 0:
+            addresses_column_name = self.get_clicked_item_from_list(item)
+            self.ui.line_edit_addresses.setText(addresses_column_name)
 
     def load_data(self) -> None:
         try:
@@ -79,22 +82,24 @@ class OutlookForm(QMainWindow, QTableWidget):
                 self.clean_data_from_data_frame()
                 self.ui.table_widget_data_from_data_frame.setColumnCount(self.data.shape[1])
                 self.ui.table_widget_data_from_data_frame.setRowCount(self.data.shape[0])
+                self.ui.table_widget_data_from_data_frame.setHorizontalHeaderLabels(self.data.columns)
                 for column, key in enumerate(self.data.columns):
                     for row, item in enumerate(self.data[key]):
                         new_item = QTableWidgetItem(item)
                         self.ui.table_widget_data_from_data_frame.setItem(row, column, new_item)
-                self.ui.table_widget_data_from_data_frame.setHorizontalHeaderLabels(self.data.columns)
                 self.load_columns_to_list_of_variables()
                 QMessageBox.information(self, 'Info', 'Database successfully loaded!')
-        except FileNotFoundError:
+        except Exception:
             QMessageBox.critical(self, 'Error', f'Something went wrong: {traceback.format_exc()}')
 
     def clean_data_from_data_frame(self) -> None:
         self.data = self.data.dropna(axis=1)
         self.data.columns = self.data.columns.str.rstrip()
         for column, data_type in zip(self.data.columns, self.data.dtypes):
-            if data_type == 'object' or data_type == 'str':
+            if data_type in ['object','str']:
                 self.data[column] = self.data[column].str.strip()
+            elif data_type in ['int64','float64','int32','float32']:
+                self.data[column] = self.data[column].astype('str')
 
     def load_columns_to_list_of_variables(self) -> None:
         if isinstance(self.data, pd.DataFrame):
@@ -183,7 +188,6 @@ class OutlookForm(QMainWindow, QTableWidget):
         try:
             list_of_emails = self.create_list_of_mails_messages()
             list_of_addresses = self.get_email_addresses()
-
             # send_account, outlook = self.find_sending_account()
             self.confirmation_dialog.close()
             self.open_sending_emails_info_dialog()
