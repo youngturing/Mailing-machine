@@ -1,7 +1,7 @@
 import re
 import sys
 import traceback
-from typing import Any
+from typing import Any, List
 
 import pandas as pd
 import win32com.client as win32
@@ -122,7 +122,7 @@ class OutlookForm(QMainWindow, QTableWidget):
     def clear_list_of_selected_items(self) -> None:
         self.ui.list_selected_variables.clear()
 
-    def get_variables_from_list(self) -> list:
+    def get_variables_from_list(self) -> List[str]:
         variables_from_list = []
         for i in range(self.ui.list_selected_variables.count()):
             variables_from_list.append(self.ui.list_selected_variables.item(i).text())
@@ -156,7 +156,7 @@ class OutlookForm(QMainWindow, QTableWidget):
                 break
         return send_account, outlook
 
-    def create_list_of_mails_messages(self) -> list:
+    def create_list_of_mails_messages(self) -> List[str]:
         list_of_mails = []
         sliced_data_frame = self.get_data_from_dataframe()
         variables_from_list, positions = self.find_matching_patterns_from_text
@@ -172,7 +172,7 @@ class OutlookForm(QMainWindow, QTableWidget):
                         email_body_list = list(email_body)
         return list_of_mails
 
-    def get_email_addresses(self) -> list:
+    def get_email_addresses(self) -> List[str]:
         column_with_addresses = self.ui.line_edit_addresses.text()
         list_of_addresses = self.data[column_with_addresses].to_list()
         return list_of_addresses
