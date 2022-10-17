@@ -159,7 +159,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("Mailing Machine", "Mailing Machine"))
+        MainWindow.setWindowTitle(_translate("Mailing machine", "Mailing machine"))
         self.label_email.setText(_translate("MainWindow", "Email body:"))
         self.push_button_send.setText(_translate("MainWindow", "Send "))
         self.push_button_test_send.setText(_translate("MainWindow", "Test send"))

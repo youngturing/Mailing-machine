@@ -4,7 +4,6 @@ import traceback
 from typing import Any, List
 
 import pandas as pd
-import numpy as np
 import win32com.client as win32
 from PyQt5.QtWidgets import QFileDialog, QTableWidget, QApplication, QTableWidgetItem
 
@@ -44,6 +43,25 @@ class OutlookForm(QMainWindow, QTableWidget):
         self.separator: str = ';'
         self.show()
 
+    @property
+    def find_matching_patterns_from_text(self) -> Any:
+        sequence = r'<<(.*?)>>'
+        pattern = re.compile(pattern=sequence)
+        email_body = self.ui.text_edit_email_body.toPlainText()
+        variables = re.findall(pattern, email_body)
+        positions = pattern.finditer(email_body)
+        return variables, positions
+
+    @staticmethod
+    def find_sending_account() -> Any:
+        send_account = None
+        outlook = win32.Dispatch('Outlook.Application')
+        for account in outlook.Session.Accounts:
+            if account.DisplayName == 'bblab@uj.edu.pl':
+                send_account = account
+                break
+        return send_account, outlook
+
     def open_confirmation_dialog(self) -> None:
         self.confirmation_dialog.show()
 
@@ -62,12 +80,12 @@ class OutlookForm(QMainWindow, QTableWidget):
         self.separator_dialog.close()
 
     def copy_selected_value_from_list_of_variables(self) -> None:
-        if self.ui.list_selected_variables.count() > 0:
+        if len(self.ui.list_widget_columns.selectedItems()) > 0:
             item = self.ui.list_selected_variables.currentItem().text()
             QApplication.clipboard().setText(item)
 
     def copy_addresses(self, item) -> None:
-        if self.ui.list_widget_columns.count() > 0:
+        if len(self.ui.list_widget_columns.selectedItems()) > 0:
             addresses_column_name = self.get_clicked_item_from_list(item)
             self.ui.line_edit_addresses.setText(addresses_column_name)
 
@@ -94,7 +112,7 @@ class OutlookForm(QMainWindow, QTableWidget):
 
     def clean_data_from_data_frame(self) -> None:
         self.data = self.data.dropna(axis=1)
-        self.data.columns = self.data.columns.str.rstrip()
+        self.data.columns = self.data.columns.str.strip()
         for column, data_type in zip(self.data.columns, self.data.dtypes):
             if data_type in ['object','str']:
                 self.data[column] = self.data[column].str.strip()
@@ -144,25 +162,6 @@ class OutlookForm(QMainWindow, QTableWidget):
             sliced_df = self.data[columns_to_slice_from_df]
             return sliced_df
 
-    @property
-    def find_matching_patterns_from_text(self) -> Any:
-        sequence = r'<<(.*?)>>'
-        pattern = re.compile(pattern=sequence)
-        email_body = self.ui.text_edit_email_body.toPlainText()
-        variables = re.findall(pattern, email_body)
-        positions = pattern.finditer(email_body)
-        return variables, positions
-
-    @staticmethod
-    def find_sending_account() -> Any:
-        send_account = None
-        outlook = win32.Dispatch('Outlook.Application')
-        for account in outlook.Session.Accounts:
-            if account.DisplayName == 'bblab@uj.edu.pl':
-                send_account = account
-                break
-        return send_account, outlook
-
     def create_list_of_mails_messages(self) -> List[str]:
         list_of_mails = []
         sliced_data_frame = self.get_data_from_dataframe()
@@ -172,7 +171,7 @@ class OutlookForm(QMainWindow, QTableWidget):
         for row in range(len(sliced_data_frame)):
             for num, (position, variable) in enumerate(zip(positions, variables_from_list)):
                 if variable in sliced_data_frame.columns:
-                    email_body_list[position.start():position.end()] = str(sliced_data_frame[variable][row])
+                    email_body_list[position.start():position.end()] = list(str(sliced_data_frame[variable][row]))
                     email_composed = ''.join(email_body_list)
                     if num + 1 == len(variables_from_list):
                         list_of_mails.append(email_composed)
@@ -201,6 +200,8 @@ class OutlookForm(QMainWindow, QTableWidget):
                 print(x)
         except:
             QMessageBox.critical(self, 'Error', f'No data: \n{traceback.format_exc()}')
+        finally:
+            self.confirmation_dialog.close()
         # for mail, address in zip(list_of_emails, list_of_addresses):
         #     mail_object = outlook.CreateItem(0)
         #     mail_object.To = address
