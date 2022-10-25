@@ -1,11 +1,13 @@
 import re
 import sys
 import traceback
+import time
 from typing import Any, List
+from enum import Enum
 
 import pandas as pd
 import win32com.client as win32
-from PyQt5.QtWidgets import QFileDialog, QTableWidget, QApplication, QTableWidgetItem
+from PyQt5.QtWidgets import QFileDialog, QApplication, QTableWidgetItem, QLabel
 
 from layout.outlook_window import Ui_MainWindow
 from outlook_dialog_confirmation import *
@@ -13,7 +15,7 @@ from outlook_emails_sending_info import *
 from separator import *
 
 
-class OutlookForm(QMainWindow, QTableWidget):
+class OutlookForm(QMainWindow):
     def __init__(self):
         super().__init__()
         self.ui = Ui_MainWindow()
@@ -25,7 +27,7 @@ class OutlookForm(QMainWindow, QTableWidget):
         self.ui.push_button_remove_variable.clicked.connect(self.remove_item_from_selected_variables)
         self.ui.push_button_clean_list.clicked.connect(self.clear_list_of_selected_items)
         self.ui.push_button_send.clicked.connect(self.open_confirmation_dialog)
-        # self.ui.push_button_test_send.clicked.connect(self.send_email)
+        self.ui.push_button_test_send.clicked.connect(self.test_send)
         self.ui.push_button_refresh.clicked.connect(self.load_columns_to_list_of_variables)
         self.ui.push_button_change_separator.clicked.connect(self.open_separator_dialog)
         self.ui.push_button_copy_selected.clicked.connect(self.copy_selected_value_from_list_of_variables)
@@ -49,8 +51,7 @@ class OutlookForm(QMainWindow, QTableWidget):
         pattern = re.compile(pattern=sequence)
         email_body = self.ui.text_edit_email_body.toPlainText()
         variables = re.findall(pattern, email_body)
-        positions = pattern.finditer(email_body)
-        return variables, positions
+        return variables
 
     @staticmethod
     def find_sending_account() -> Any:
@@ -67,6 +68,7 @@ class OutlookForm(QMainWindow, QTableWidget):
 
     def open_sending_emails_info_dialog(self) -> None:
         self.sending_email_dialog.show()
+        self.sending_email_dialog.ui.text_edit_mail_info.clear()
 
     def open_separator_dialog(self) -> None:
         self.separator_dialog.show()
@@ -78,6 +80,9 @@ class OutlookForm(QMainWindow, QTableWidget):
 
     def cancel_changing_separator(self) -> None:
         self.separator_dialog.close()
+
+    def cancel_sending_email(self):
+        self.confirmation_dialog.close()
 
     def copy_selected_value_from_list_of_variables(self) -> None:
         if len(self.ui.list_widget_columns.selectedItems()) > 0:
@@ -114,9 +119,9 @@ class OutlookForm(QMainWindow, QTableWidget):
         self.data = self.data.dropna(axis=1)
         self.data.columns = self.data.columns.str.strip()
         for column, data_type in zip(self.data.columns, self.data.dtypes):
-            if data_type in ['object','str']:
+            if data_type in ['object', 'str']:
                 self.data[column] = self.data[column].str.strip()
-            elif data_type in ['int64','float64','int32','float32']:
+            elif data_type in ['int64', 'float64', 'int32', 'float32']:
                 self.data[column] = self.data[column].astype('str')
 
     def load_columns_to_list_of_variables(self) -> None:
@@ -165,17 +170,17 @@ class OutlookForm(QMainWindow, QTableWidget):
     def create_list_of_mails_messages(self) -> List[str]:
         list_of_mails = []
         sliced_data_frame = self.get_data_from_dataframe()
-        variables_from_list, positions = self.find_matching_patterns_from_text
+        variables_from_list = self.find_matching_patterns_from_text
         email_body = self.ui.text_edit_email_body.toPlainText()
-        email_body_list = list(email_body)
+        email_body_dict = {'Body': email_body}
         for row in range(len(sliced_data_frame)):
-            for num, (position, variable) in enumerate(zip(positions, variables_from_list)):
+            for num, variable in enumerate(variables_from_list):
                 if variable in sliced_data_frame.columns:
-                    email_body_list[position.start():position.end()] = list(str(sliced_data_frame[variable][row]))
-                    email_composed = ''.join(email_body_list)
+                    email_body_dict['Body'] = email_body_dict['Body'] \
+                        .replace(f'<<{variable}>>', str(sliced_data_frame[variable][row]))
                     if num + 1 == len(variables_from_list):
-                        list_of_mails.append(email_composed)
-                        email_body_list = list(email_body)
+                        list_of_mails.append(email_body_dict['Body'])
+                        email_body_dict['Body'] = email_body
         return list_of_mails
 
     def get_email_addresses(self) -> List[str]:
@@ -183,38 +188,56 @@ class OutlookForm(QMainWindow, QTableWidget):
         list_of_addresses = self.data[column_with_addresses].to_list()
         return list_of_addresses
 
-    def send_email(self):
-        try:
-            list_of_emails = self.create_list_of_mails_messages()
-            list_of_addresses = self.get_email_addresses()
-            # send_account, outlook = self.find_sending_account()
-            self.confirmation_dialog.close()
-            self.open_sending_emails_info_dialog()
-            for address in list_of_addresses:
-                self.sending_email_dialog.ui.label_email_sending_info.setText(f'Email send to: {address}\n'
-                                                                              f'{"="*50}')
-            for x in list_of_addresses:
-                print(x)
+    def compose_sending_operation(self, sending_type) -> Any:
+        list_of_emails = self.create_list_of_mails_messages()
+        list_of_addresses = self.get_email_addresses()
+        self.confirmation_dialog.close()
+        self.open_sending_emails_info_dialog()
+        if sending_type == 'test_send':
+            return list_of_emails, list_of_addresses
+        elif sending_type == 'normal_send':
+            send_account, outlook = self.find_sending_account()
+            return list_of_emails, list_of_addresses, send_account, outlook
 
-            for x in list_of_emails:
-                print(x)
+    def test_send(self):
+        try:
+            list_of_emails, list_of_addresses = self.compose_sending_operation(sending_type=SendingType.TEST_SEND.value)
+            for address, mail in zip(list_of_addresses, list_of_emails):
+                self.sending_email_dialog.ui.text_edit_mail_info.insertPlainText(f'Email send to: {address}\n'
+                                                                                 f'Body:\n'
+                                                                                 f'{mail}\n'
+                                                                                 f'{"=" * 60}\n')
         except:
             QMessageBox.critical(self, 'Error', f'No data: \n{traceback.format_exc()}')
         finally:
             self.confirmation_dialog.close()
-        # for mail, address in zip(list_of_emails, list_of_addresses):
-        #     mail_object = outlook.CreateItem(0)
-        #     mail_object.To = address
-        #     mail_object.Subject = mail_subject
-        #     mail_object.Body = mail
-        #     mail_object._oleobj_.Invoke(*(64209, 0, 8, 0, send_account))
-        #     mail_object.Send()    # Sending emails to to the list of users
-        #     print(f'Email send to: {name} at {mail} with project name: {project_name}')
-        #     print('=' * 40)
-        #     time.sleep(3)
 
-    def cancel_sending_email(self):
-        self.confirmation_dialog.close()
+    def send_email(self):
+        list_of_emails, list_of_addresses, send_account, outlook = self.compose_sending_operation(
+            sending_type=SendingType.NORMAL_SEND.value)
+        mail_subject = self.ui.line_edit_subject.text()
+        try:
+            for address, mail in zip(list_of_addresses, list_of_emails):
+                mail_object = outlook.CreateItem(0)
+                mail_object.To = address
+                mail_object.Subject = mail_subject
+                mail_object.Body = mail
+                mail_object._oleobj_.Invoke(*(64209, 0, 8, 0, send_account))
+                mail_object.Send()  # Sending emails to to the list of users
+                self.sending_email_dialog.ui.text_edit_mail_info.insertPlainText(f'Email send to: {address}\n'
+                                                                                 f'Body:\n'
+                                                                                 f'{mail}\n'
+                                                                                 f'{"=" * 60}\n')
+                time.sleep(3)
+        except:
+            QMessageBox.critical(self, 'Error', f'No data: \n{traceback.format_exc()}')
+        finally:
+            self.confirmation_dialog.close()
+
+
+class SendingType(Enum):
+    TEST_SEND = 'test_send'
+    NORMAL_SEND = 'normal_send'
 
 
 if __name__ == "__main__":

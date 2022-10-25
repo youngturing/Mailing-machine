@@ -14,13 +14,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog_Sending(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(640, 480)
+        Dialog.resize(803, 553)
         self.gridLayout = QtWidgets.QGridLayout(Dialog)
         self.gridLayout.setObjectName("gridLayout")
-        self.label_email_sending_info = QtWidgets.QLabel(Dialog)
-        self.label_email_sending_info.setText("")
-        self.label_email_sending_info.setObjectName("label_email_sending_info")
-        self.gridLayout.addWidget(self.label_email_sending_info, 0, 0, 1, 1)
+        self.text_edit_mail_info = QtWidgets.QTextEdit(Dialog)
+        self.text_edit_mail_info.setObjectName("text_edit_mail_info")
+        self.gridLayout.addWidget(self.text_edit_mail_info, 0, 0, 1, 1)
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
