@@ -85,14 +85,18 @@ class OutlookForm(QMainWindow):
         self.confirmation_dialog.close()
 
     def copy_selected_value_from_list_of_variables(self) -> None:
-        if len(self.ui.list_widget_columns.selectedItems()) > 0:
+        try:
             item = self.ui.list_selected_variables.currentItem().text()
             QApplication.clipboard().setText(item)
+        except:
+            QMessageBox.critical(self, 'Error', f'Something went wrong: {traceback.format_exc()}')
 
     def copy_addresses(self, item) -> None:
-        if len(self.ui.list_widget_columns.selectedItems()) > 0:
+        try:
             addresses_column_name = self.get_clicked_item_from_list(item)
             self.ui.line_edit_addresses.setText(addresses_column_name)
+        except:
+            QMessageBox.critical(self, 'Error', f'Something went wrong: {traceback.format_exc()}')
 
     def load_data(self) -> None:
         try:
