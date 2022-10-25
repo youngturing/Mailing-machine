@@ -188,7 +188,7 @@ class OutlookForm(QMainWindow):
         list_of_addresses = self.data[column_with_addresses].to_list()
         return list_of_addresses
 
-    def compose_sending_operation(self, sending_type) -> Any:
+    def compose_sending_operation(self, sending_type: str) -> Any:
         list_of_emails = self.create_list_of_mails_messages()
         list_of_addresses = self.get_email_addresses()
         self.confirmation_dialog.close()
