@@ -213,14 +213,13 @@ class OutlookForm(QMainWindow):
                                                                                  f'{"=" * 60}\n')
         except:
             QMessageBox.critical(self, 'Error', f'No data: \n{traceback.format_exc()}')
-        finally:
-            self.confirmation_dialog.close()
 
     def send_email(self):
-        list_of_emails, list_of_addresses, send_account, outlook = self.compose_sending_operation(
-            sending_type=SendingType.NORMAL_SEND.value)
-        mail_subject = self.ui.line_edit_subject.text()
         try:
+            list_of_emails, list_of_addresses, send_account, outlook = self.compose_sending_operation(
+                sending_type=SendingType.NORMAL_SEND.value)
+            mail_subject = self.ui.line_edit_subject.text()
+
             for address, mail in zip(list_of_addresses, list_of_emails):
                 mail_object = outlook.CreateItem(0)
                 mail_object.To = address
