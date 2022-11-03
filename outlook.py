@@ -21,6 +21,7 @@ class OutlookForm(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.actionOpen_data_file.triggered.connect(self.load_data)
+        self.ui.actionChange_separator.triggered.connect(self.open_separator_dialog)
         self.ui.list_widget_columns.itemClicked.connect(self.get_clicked_item_from_list)
         self.ui.list_selected_variables.itemClicked.connect(self.get_clicked_item_from_list_of_variables)
         self.ui.push_button_add_variable.clicked.connect(self.add_data_to_listed_variables)
@@ -28,8 +29,7 @@ class OutlookForm(QMainWindow):
         self.ui.push_button_clean_list.clicked.connect(self.clear_list_of_selected_items)
         self.ui.push_button_send.clicked.connect(self.open_confirmation_dialog)
         self.ui.push_button_test_send.clicked.connect(self.test_send)
-        self.ui.push_button_refresh.clicked.connect(self.load_columns_to_list_of_variables)
-        self.ui.push_button_change_separator.clicked.connect(self.open_separator_dialog)
+        self.ui.font_combo_box.currentFontChanged.connect(self.change_font)
         self.ui.push_button_copy_selected.clicked.connect(self.copy_selected_value_from_list_of_variables)
         self.ui.push_button_copy_addresses.clicked.connect(self.copy_addresses)
         """"""
@@ -58,7 +58,7 @@ class OutlookForm(QMainWindow):
         send_account = None
         outlook = win32.Dispatch('Outlook.Application')
         for account in outlook.Session.Accounts:
-            if account.DisplayName == 'bblab@uj.edu.pl':
+            if account.DisplayName == 'mikolaj.daraz@student.uj.edu.pl':
                 send_account = account
                 break
         return send_account, outlook
@@ -77,6 +77,10 @@ class OutlookForm(QMainWindow):
         new_separator = self.separator_dialog.ui.line_edit_separator.text()
         self.separator = new_separator
         self.separator_dialog.close()
+
+    def change_font(self) -> None:
+        new_font = self.ui.font_combo_box.currentFont()
+        self.ui.text_edit_email_body.setFont(new_font)
 
     def cancel_changing_separator(self) -> None:
         self.separator_dialog.close()
@@ -219,13 +223,12 @@ class OutlookForm(QMainWindow):
             list_of_emails, list_of_addresses, send_account, outlook = self.compose_sending_operation(
                 sending_type=SendingType.NORMAL_SEND.value)
             mail_subject = self.ui.line_edit_subject.text()
-
             for address, mail in zip(list_of_addresses, list_of_emails):
                 mail_object = outlook.CreateItem(0)
                 mail_object.To = address
                 mail_object.Subject = mail_subject
                 mail_object.Body = mail
-                mail_object._oleobj_.Invoke(*(64209, 0, 8, 0, send_account))
+                mail_object._oleobj_.Invoke(*(64209, 0, 8, 0, send_account)) # Changing sender's address
                 mail_object.Send()  # Sending emails to to the list of users
                 self.sending_email_dialog.ui.text_edit_mail_info.insertPlainText(f'Email send to: {address}\n'
                                                                                  f'Body:\n'
@@ -233,7 +236,7 @@ class OutlookForm(QMainWindow):
                                                                                  f'{"=" * 60}\n')
                 time.sleep(3)
         except:
-            QMessageBox.critical(self, 'Error', f'No data: \n{traceback.format_exc()}')
+            QMessageBox.critical(self, 'Error', f'No data:\n{traceback.format_exc()}')
         finally:
             self.confirmation_dialog.close()
 
