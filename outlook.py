@@ -168,10 +168,7 @@ class OutlookForm(QMainWindow):
     def get_data_from_dataframe(self) -> pd.DataFrame:
         if isinstance(self.data, pd.DataFrame):
             variables_from_list = self.get_variables_from_list()
-            columns_to_slice_from_df = []
-            for variable in variables_from_list:
-                if variable in self.data.columns:
-                    columns_to_slice_from_df.append(variable)
+            columns_to_slice_from_df = [variable for variables_from_list if variable in self.data.columns]
             sliced_df = self.data[columns_to_slice_from_df]
             return sliced_df
 
