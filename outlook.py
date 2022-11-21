@@ -168,7 +168,7 @@ class OutlookForm(QMainWindow):
     def get_data_from_dataframe(self) -> pd.DataFrame:
         if isinstance(self.data, pd.DataFrame):
             variables_from_list = self.get_variables_from_list()
-            columns_to_slice_from_df = [variable for variables_from_list if variable in self.data.columns]
+            columns_to_slice_from_df = [var for var in variables_from_list if var in self.data.columns]
             sliced_df = self.data[columns_to_slice_from_df]
             return sliced_df
 
@@ -225,7 +225,7 @@ class OutlookForm(QMainWindow):
                 mail_object.To = address
                 mail_object.Subject = mail_subject
                 mail_object.Body = mail
-                mail_object._oleobj_.Invoke(*(64209, 0, 8, 0, send_account)) # Changing sender's address
+                mail_object._oleobj_.Invoke(*(64209, 0, 8, 0, send_account))  # Changing sender's address
                 mail_object.Send()  # Sending emails to to the list of users
                 self.sending_email_dialog.ui.text_edit_mail_info.insertPlainText(f'Email send to: {address}\n'
                                                                                  f'Body:\n'
