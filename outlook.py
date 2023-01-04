@@ -210,11 +210,13 @@ class OutlookForm(QMainWindow):
         try:
             list_of_emails, list_of_addresses = self.compose_sending_operation(sending_type=SendingType.TEST_SEND.value)
             for address, mail in zip(list_of_addresses, list_of_emails):
-                self.sending_email_dialog.ui.text_edit_mail_info.insertPlainText(f'Email send to: {address}\n'
-                                                                                 f'Body:\n'
-                                                                                 '\n'
-                                                                                 f'{mail}\n'
-                                                                                 f'{"=" * 60}\n')
+                self.sending_email_dialog.ui.text_edit_mail_info.insertPlainText(
+                    f'Email send to: {address}\n'
+                    f'Body:\n'
+                    '\n'
+                    f'{mail}\n'
+                    f'{"=" * 60}\n'
+                )
         except:
             QMessageBox.critical(self, 'Error', f'No data:\n\n{traceback.format_exc()}')
 
@@ -230,12 +232,14 @@ class OutlookForm(QMainWindow):
                 mail_object.Body = mail
                 mail_object._oleobj_.Invoke(*(64209, 0, 8, 0, send_account))  # Changing sender's address
                 mail_object.Send()  # Sending emails to to the list of users
-                self.sending_email_dialog.ui.text_edit_mail_info.insertPlainText(f'Email send to: {address}\n'
-                                                                                 f'Body:\n'
-                                                                                 '\n'
-                                                                                 f'{mail}\n'
-                                                                                 f'{"=" * 60}\n')
-                time.sleep(3)
+                self.sending_email_dialog.ui.text_edit_mail_info.insertPlainText(
+                    f'Email send to: {address}\n'
+                    f'Body:\n'
+                    '\n'
+                    f'{mail}\n'
+                    f'{"=" * 60}\n'
+                )
+                time.sleep(2)
         except:
             QMessageBox.critical(self, 'Error', f'No data:\n\n{traceback.format_exc()}')
         finally:
