@@ -53,12 +53,11 @@ class OutlookForm(QMainWindow):
         variables = re.findall(pattern, email_body)
         return variables
 
-    @staticmethod
-    def find_sending_account() -> Any:
+    def find_sending_account(self) -> Any:
         send_account = None
         outlook = win32.Dispatch('Outlook.Application')
         for account in outlook.Session.Accounts:
-            if account.DisplayName == 'mikolaj.daraz@student.uj.edu.pl':
+            if account.DisplayName == self.ui.line_edit_from.text():
                 send_account = account
                 break
         return send_account, outlook
