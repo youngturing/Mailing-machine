@@ -93,14 +93,14 @@ class OutlookForm(QMainWindow):
             item = self.ui.list_selected_variables.currentItem().text()
             QApplication.clipboard().setText(item)
         except:
-            QMessageBox.critical(self, 'Error', f'Something went wrong: {traceback.format_exc()}')
+            QMessageBox.critical(self, 'Error', f'Something went wrong:\n\n{traceback.format_exc()}')
 
     def copy_addresses(self, item) -> None:
         try:
             addresses_column_name = self.get_clicked_item_from_list(item)
             self.ui.line_edit_addresses.setText(addresses_column_name)
         except:
-            QMessageBox.critical(self, 'Error', f'Something went wrong: {traceback.format_exc()}')
+            QMessageBox.critical(self, 'Error', f'Something went wrong:\n\n{traceback.format_exc()}')
 
     def load_data(self) -> None:
         try:
@@ -121,7 +121,7 @@ class OutlookForm(QMainWindow):
                 self.load_columns_to_list_of_variables()
                 QMessageBox.information(self, 'Info', 'Database successfully loaded!')
         except Exception:
-            QMessageBox.critical(self, 'Error', f'Something went wrong: {traceback.format_exc()}')
+            QMessageBox.critical(self, 'Error', f'Something went wrong:\n\n{traceback.format_exc()}')
 
     def clean_data_from_data_frame(self) -> None:
         self.data = self.data.dropna(axis=1)
@@ -188,6 +188,9 @@ class OutlookForm(QMainWindow):
                         email_body_dict['Body'] = email_body
         return list_of_mails
 
+    def add_attachements(self):
+        pass
+
     def get_email_addresses(self) -> List[str]:
         column_with_addresses = self.ui.line_edit_addresses.text()
         list_of_addresses = self.data[column_with_addresses].to_list()
@@ -210,10 +213,11 @@ class OutlookForm(QMainWindow):
             for address, mail in zip(list_of_addresses, list_of_emails):
                 self.sending_email_dialog.ui.text_edit_mail_info.insertPlainText(f'Email send to: {address}\n'
                                                                                  f'Body:\n'
+                                                                                 '\n'
                                                                                  f'{mail}\n'
                                                                                  f'{"=" * 60}\n')
         except:
-            QMessageBox.critical(self, 'Error', f'No data: \n{traceback.format_exc()}')
+            QMessageBox.critical(self, 'Error', f'No data:\n\n{traceback.format_exc()}')
 
     def send_email(self):
         try:
@@ -229,11 +233,12 @@ class OutlookForm(QMainWindow):
                 mail_object.Send()  # Sending emails to to the list of users
                 self.sending_email_dialog.ui.text_edit_mail_info.insertPlainText(f'Email send to: {address}\n'
                                                                                  f'Body:\n'
+                                                                                 '\n'
                                                                                  f'{mail}\n'
                                                                                  f'{"=" * 60}\n')
                 time.sleep(3)
         except:
-            QMessageBox.critical(self, 'Error', f'No data:\n{traceback.format_exc()}')
+            QMessageBox.critical(self, 'Error', f'No data:\n\n{traceback.format_exc()}')
         finally:
             self.confirmation_dialog.close()
 
