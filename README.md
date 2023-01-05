@@ -1,7 +1,11 @@
 # Mailing machine
-Application for email sending automation using Outlook
 
-### Basic use case:
+Application for email sending automation using Outlook. Application requires Outlook desktop pre installed in order to function. **Works only on Windows OS**. 
+
+### Main use case:
+1. Download code from this repository
+1. Unpack the code and using cmd navigate to directory with code
+1. Type in `python outlook.py` to run the application
 1. Load data from `.csv` file:
    1. click on "File" action button on the left corner of the main window
    2. click "Open data file"
@@ -31,26 +35,26 @@ Application for email sending automation using Outlook
 
    ![img_3.png](static/img_readme/img_3.png)
 
-3. Add columns to **Selected variables** section on the right by clicking on each column name in **Columns** list and **Add** button:
+6. Add columns to **Selected variables** section on the right by clicking on each column name in **Columns** list and **Add** button:
 
    ![img_4.png](static/img_readme/img_4.png)
 
 - If you want to remove certain columns from **Selected variables** click on the column name and then click **Remove** button
 - If you want to clean list of selected variables, click on the **Clean** button below the list 
 
-4. Add column with email addresses which should receive messages to **Addresses** line edit by clicking **Copy addresses** button, while having cursor focused on correct column in **Columns** section:
+7. Add column with email addresses which should receive messages to **Addresses** line edit by clicking **Copy addresses** button, while having cursor focused on correct column in **Columns** section:
 
    ![img_5.png](static/img_readme/img_5.png)
 
-5. Type in sender's email address in **From** line edit:
+8. Type in sender's email address in **From** line edit:
 
    ![img_6.png](static/img_readme/img_6.png)
 
-6. Type in subject for email messages in **Subject** line edit:
+9. Type in subject for email messages in **Subject** line edit:
 
    ![img_8.png](static/img_readme/img_8.png)
 
-7. Write message in **Email body** plain text section:
+10. Write message in **Email body** plain text section:
 
    ![img_9.png](static/img_readme/img_9.png)
 
@@ -62,7 +66,7 @@ Application for email sending automation using Outlook
    ![img_10.png](static/img_readme/img_10.png)
 - it will cause iteration over selected columns from database which outputs one message per one row from database with the data from chosen row
 
-8. Send email messages:
+11. Send email messages:
    - if you want to test whether the data loads correctly to messages  click on **Test send** button
    - if you want to send real messages click on **Send** button. Dialog with confirmation should pop up:
    ![img_11.png](static/img_readme/img_11.png)
