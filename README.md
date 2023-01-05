@@ -1,6 +1,6 @@
 # Mailing machine
 
-Application for email sending automation using Outlook. Application requires Outlook desktop pre installed in order to function. **Works only on Windows OS**. 
+Application for email sending automation using Outlook. Application requires Outlook desktop preinstalled in order to function. **Works only on Windows OS**. 
 
 ### Main use case:
 1. Download code from this repository
