@@ -16,7 +16,7 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("Mailing Machine")
         MainWindow.resize(869, 897)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("outlook/mailing-machine/static/img/email_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("outlook/Mailing-machine/static/img/email_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
