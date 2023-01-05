@@ -1,4 +1,4 @@
-# Mailing machine
+# Outlook mass
 
 Application for email sending automation using Outlook. **In order to function application requires:**
 - Outlook desktop preinstalled
