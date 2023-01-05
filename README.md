@@ -70,5 +70,5 @@ Application for email sending automation using Outlook. Application requires Out
    - if you want to test whether the data loads correctly to messages  click on **Test send** button
    - if you want to send real messages click on **Send** button. Dialog with confirmation should pop up:
    ![img_11.png](static/img_readme/img_11.png)
-   - after clicking "Ok" another window should open with printed email messages
+   - after clicking "OK" another window should open with printed email messages
    - in case of error dialog with error message should open
