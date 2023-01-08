@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        MainWindow.setObjectName("Mailing Machine")
+        MainWindow.setObjectName("Outlook mass")
         MainWindow.resize(869, 897)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("outlook/Mailing-machine/static/img/email_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -164,26 +164,26 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label_email.setText(_translate("MainWindow", "Email body:"))
-        self.push_button_send.setText(_translate("MainWindow", "Send "))
-        self.push_button_test_send.setText(_translate("MainWindow", "Test send"))
-        self.label_variables.setText(_translate("MainWindow", "Selected variables"))
-        self.list_selected_variables.setToolTip(_translate("MainWindow", "<html><head/><body><p><br/></p></body></html>"))
-        self.label_columns.setText(_translate("MainWindow", "Columns"))
-        self.push_button_add_variable.setText(_translate("MainWindow", "Add"))
-        self.push_button_remove_variable.setText(_translate("MainWindow", "Remove"))
-        self.push_button_copy_selected.setText(_translate("MainWindow", "Copy selected"))
-        self.push_button_clean_list.setText(_translate("MainWindow", "Clean"))
-        self.label_subject.setText(_translate("MainWindow", "Subject:"))
-        self.label_addresses.setText(_translate("MainWindow", "Addresses:"))
-        self.push_button_copy_addresses.setText(_translate("MainWindow", "Copy addresses"))
-        self.label_from.setText(_translate("MainWindow", "From:"))
-        self.menuFile.setTitle(_translate("MainWindow", "File"))
-        self.actionOpen_data_file.setText(_translate("MainWindow", "Open data file"))
-        self.actionOpen_data_file.setShortcut(_translate("MainWindow", "Ctrl+N"))
-        self.actionChange_separator.setText(_translate("MainWindow", "Change separator"))
-        self.actionChange_separator.setShortcut(_translate("MainWindow", "Ctrl+P"))
+        MainWindow.setWindowTitle(_translate("Outlook mass", "Outlook mass"))
+        self.label_email.setText(_translate("Outlook mass", "Email body:"))
+        self.push_button_send.setText(_translate("Outlook mass", "Send "))
+        self.push_button_test_send.setText(_translate("Outlook mass", "Test send"))
+        self.label_variables.setText(_translate("Outlook mass", "Selected variables"))
+        self.list_selected_variables.setToolTip(_translate("Outlook mass", "<html><head/><body><p><br/></p></body></html>"))
+        self.label_columns.setText(_translate("Outlook mass", "Columns"))
+        self.push_button_add_variable.setText(_translate("Outlook mass", "Add"))
+        self.push_button_remove_variable.setText(_translate("Outlook mass", "Remove"))
+        self.push_button_copy_selected.setText(_translate("Outlook mass", "Copy selected"))
+        self.push_button_clean_list.setText(_translate("Outlook mass", "Clean"))
+        self.label_subject.setText(_translate("Outlook mass", "Subject:"))
+        self.label_addresses.setText(_translate("Outlook mass", "Addresses:"))
+        self.push_button_copy_addresses.setText(_translate("Outlook mass", "Copy addresses"))
+        self.label_from.setText(_translate("Outlook mass", "From:"))
+        self.menuFile.setTitle(_translate("Outlook mass", "File"))
+        self.actionOpen_data_file.setText(_translate("Outlook mass", "Open data file"))
+        self.actionOpen_data_file.setShortcut(_translate("Outlook mass", "Ctrl+N"))
+        self.actionChange_separator.setText(_translate("Outlook mass", "Change separator"))
+        self.actionChange_separator.setShortcut(_translate("Outlook mass", "Ctrl+P"))
 
 
 if __name__ == "__main__":
