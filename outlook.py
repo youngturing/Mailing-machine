@@ -15,6 +15,11 @@ from outlook_emails_sending_info import *
 from separator import *
 
 
+class SendingType(Enum):
+    TEST_SEND = 'test_send'
+    NORMAL_SEND = 'normal_send'
+
+
 class OutlookForm(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -203,9 +208,9 @@ class OutlookForm(QMainWindow):
         list_of_addresses = self.get_email_addresses()
         self.confirmation_dialog.close()
         self.open_sending_emails_info_dialog()
-        if sending_type == 'test_send':
+        if sending_type == SendingType.TEST_SEND.value:
             return list_of_emails, list_of_addresses
-        elif sending_type == 'normal_send':
+        elif sending_type == SendingType.NORMAL_SEND.value:
             send_account, outlook = self.find_sending_account()
             return list_of_emails, list_of_addresses, send_account, outlook
 
@@ -247,11 +252,6 @@ class OutlookForm(QMainWindow):
             QMessageBox.critical(self, 'Error', f'No data:\n\n{traceback.format_exc()}')
         finally:
             self.confirmation_dialog.close()
-
-
-class SendingType(Enum):
-    TEST_SEND = 'test_send'
-    NORMAL_SEND = 'normal_send'
 
 
 if __name__ == "__main__":
