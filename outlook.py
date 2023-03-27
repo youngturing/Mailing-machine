@@ -180,6 +180,15 @@ class OutlookForm(QMainWindow):
             return sliced_df
 
     def create_list_of_mails_messages(self) -> List[str]:
+        """
+        Creates a list of mail messages with data from loaded DataFrame object.
+        It iterates through the rows of DataFrame (one row is equal to one individual)
+        and fills in the marked variables in the mail message.
+
+        Returns
+        -------
+        list_of_mails: List[str] - list of mail messages with data from loaded DataFrame
+        """
         list_of_mails = []
         sliced_data_frame = self.get_data_from_dataframe()
         variables_from_list = self.find_matching_patterns_from_text
@@ -190,7 +199,7 @@ class OutlookForm(QMainWindow):
                 if variable in sliced_data_frame.columns:
                     email_body_dict['Body'] = email_body_dict['Body'] \
                         .replace(f'<<{variable}>>', str(sliced_data_frame[variable][row]))
-                    if num + 1 == len(variables_from_list):
+                    if num == len(variables_from_list) - 1:
                         list_of_mails.append(email_body_dict['Body'])
                         email_body_dict['Body'] = email_body
         return list_of_mails
@@ -216,7 +225,9 @@ class OutlookForm(QMainWindow):
 
     def test_send(self):
         try:
-            list_of_emails, list_of_addresses = self.compose_sending_operation(sending_type=SendingType.TEST_SEND.value)
+            list_of_emails, list_of_addresses = self.compose_sending_operation(
+                sending_type=SendingType.TEST_SEND.value
+            )
             for address, mail in zip(list_of_addresses, list_of_emails):
                 self.sending_email_dialog.ui.text_edit_mail_info.insertPlainText(
                     f'Email send to: {address}\n'
@@ -231,7 +242,8 @@ class OutlookForm(QMainWindow):
     def send_email(self):
         try:
             list_of_emails, list_of_addresses, send_account, outlook = self.compose_sending_operation(
-                sending_type=SendingType.NORMAL_SEND.value)
+                sending_type=SendingType.NORMAL_SEND.value
+            )
             mail_subject = self.ui.line_edit_subject.text()
             for address, mail in zip(list_of_addresses, list_of_emails):
                 mail_object = outlook.CreateItem(0)
