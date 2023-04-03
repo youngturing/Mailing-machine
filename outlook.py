@@ -261,7 +261,7 @@ class OutlookForm(QMainWindow):
                 )
                 time.sleep(2)
         except:
-            QMessageBox.critical(self, 'Error', f'No data:\n\n{traceback.format_exc()}')
+            QMessageBox.critical(self, 'Error', f'There is no data:\n\n{traceback.format_exc()}')
         finally:
             self.confirmation_dialog.close()
 
