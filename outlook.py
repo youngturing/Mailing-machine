@@ -187,7 +187,7 @@ class OutlookForm(QMainWindow):
 
         Returns
         -------
-        list_of_mails: List[str] - list of mail messages with data from loaded DataFrame
+            list_of_mails: List[str] - list of mail messages with data from loaded DataFrame
         """
         list_of_mails = []
         sliced_data_frame = self.get_data_from_dataframe()
@@ -195,13 +195,13 @@ class OutlookForm(QMainWindow):
         email_body = self.ui.text_edit_email_body.toPlainText()
         email_body_dict = {'Body': email_body}
         for row in range(len(sliced_data_frame)):
-            for num, variable in enumerate(variables_from_list):
-                if variable in sliced_data_frame.columns:
-                    email_body_dict['Body'] = email_body_dict['Body'] \
-                        .replace(f'<<{variable}>>', str(sliced_data_frame[variable][row]))
-                    if num == len(variables_from_list) - 1:
-                        list_of_mails.append(email_body_dict['Body'])
-                        email_body_dict['Body'] = email_body
+            for var in variables_from_list:
+                if var in sliced_data_frame.columns:
+                    email_body_dict['Body'] = email_body_dict['Body'].replace(
+                        f'<<{var}>>', str(sliced_data_frame[var][row]),
+                    )
+            list_of_mails.append(email_body_dict['Body'])
+            email_body_dict['Body'] = email_body
         return list_of_mails
 
     def add_attachements(self):
