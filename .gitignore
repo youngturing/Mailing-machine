@@ -1,6 +1,6 @@
 __pycache__
 layout/__pycache__/
-MOCK_DATA — kopia.csv
 email_body.txt
 todo.md
 *.ui
+*.csv
