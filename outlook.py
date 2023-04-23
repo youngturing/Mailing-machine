@@ -205,7 +205,7 @@ class OutlookForm(QMainWindow):
         return list_of_mails
 
     def add_attachements(self):
-        pass
+        raise NotImplementedError('Adding attachements yet to be implemented - both in UI and code')
 
     def get_email_addresses(self) -> List[str]:
         column_with_addresses = self.ui.line_edit_addresses.text()
@@ -259,7 +259,7 @@ class OutlookForm(QMainWindow):
                     f'{mail}\n'
                     f'{"=" * 60}\n'
                 )
-                time.sleep(2)
+                time.sleep(1)
         except:
             QMessageBox.critical(self, 'Error', f'No data:\n\n{traceback.format_exc()}')
         finally:
