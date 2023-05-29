@@ -125,7 +125,7 @@ class OutlookForm(QMainWindow):
                 self.load_columns_to_list_of_variables()
                 QMessageBox.information(self, 'Info', 'Database successfully loaded!')
         except Exception:
-            QMessageBox.critical(self, 'Error', f'Chose correct csv_file extension: .csv')
+            QMessageBox.critical(self, 'Error', 'Chose correct csv_file extension: .csv')
 
     def clean_data_from_data_frame(self) -> None:
         self.data = self.data.dropna(axis=1)
@@ -234,7 +234,7 @@ class OutlookForm(QMainWindow):
                     f'{"=" * 60}\n'
                 )
         except Exception:
-            QMessageBox.critical(self, 'Error', f'No data.\nCreate email message with variables first.')
+            QMessageBox.critical(self, 'Error', 'No data.\nCreate email message with variables first.')
 
     def send_email(self):
         try:
@@ -258,7 +258,7 @@ class OutlookForm(QMainWindow):
                 )
                 time.sleep(1)
         except Exception:
-            QMessageBox.critical(self, 'Error', f'No data.\nCreate email message with variables first.')
+            QMessageBox.critical(self, 'Error', 'No data.\nCreate email message with variables first.')
         finally:
             self.confirmation_dialog.close()
 
