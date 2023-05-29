@@ -7,12 +7,13 @@ from enum import Enum
 
 import pandas as pd
 import win32com.client as win32
-from PyQt5.QtWidgets import QFileDialog, QApplication, QTableWidgetItem, QLabel
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QFileDialog, QApplication, QTableWidgetItem, QLabel, QMainWindow, QMessageBox
 
-from layout.outlook_window import Ui_MainWindow
-from outlook_dialog_confirmation import *
-from outlook_emails_sending_info import *
-from separator import *
+from layout.outlook_window import MainWindowUI
+from outlook_dialog_confirmation import OutlookConfirmationDialog
+from outlook_emails_sending_info import OutlookSendingInfo
+from separator import OutlookSeparator
 
 
 class SendingType(Enum):
@@ -23,11 +24,11 @@ class SendingType(Enum):
 class OutlookForm(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.ui = Ui_MainWindow()
+        self.ui = MainWindowUI()
         self.ui.setupUi(self)
 
-        self.ui.actionOpen_data_file.triggered.connect(self.load_data)
-        self.ui.actionChange_separator.triggered.connect(self.open_separator_dialog)
+        self.ui.action_open_data_file.triggered.connect(self.load_data)
+        self.ui.action_change_separator.triggered.connect(self.open_separator_dialog)
 
         self.ui.list_widget_columns.itemClicked.connect(self.get_clicked_item_from_list)
         self.ui.list_selected_variables.itemClicked.connect(self.get_clicked_item_from_list_of_variables)
@@ -50,7 +51,7 @@ class OutlookForm(QMainWindow):
         self.separator_dialog.ui.push_button_cancel_sep.clicked.connect(self.cancel_changing_separator)
 
         self.data = None
-        self.separator: str = ';'
+        self.separator: str = ','
         self.show()
 
     @property
@@ -96,27 +97,23 @@ class OutlookForm(QMainWindow):
         self.confirmation_dialog.close()
 
     def copy_selected_value_from_list_of_variables(self) -> None:
-        try:
+        if self.ui.list_selected_variables.currentItem():
             item = self.ui.list_selected_variables.currentItem().text()
             QApplication.clipboard().setText(item)
-        except:
-            QMessageBox.critical(self, 'Error', f'Something went wrong:\n\n{traceback.format_exc()}')
 
     def copy_addresses(self, item) -> None:
-        try:
+        if self.ui.list_selected_variables.count() > 0:
             addresses_column_name = self.get_clicked_item_from_list(item)
             self.ui.line_edit_addresses.setText(addresses_column_name)
-        except:
-            QMessageBox.critical(self, 'Error', f'Something went wrong:\n\n{traceback.format_exc()}')
 
     def load_data(self) -> None:
         try:
-            file, _ = QFileDialog.getOpenFileName(self, "Open file", "", "All files (*);;CSV files (*.csv)")
-            if file:
+            csv_file, _ = QFileDialog.getOpenFileName(self, "Open csv_file", "", "All files (*);;CSV files (*.csv)")
+            if csv_file:
                 if len(self.separator) != 0:
-                    self.data = pd.read_csv(file, sep=str(self.separator))
+                    self.data = pd.read_csv(csv_file, sep=str(self.separator))
                 else:
-                    self.data = pd.read_csv(file)
+                    self.data = pd.read_csv(csv_file)
                 self.clean_data_from_data_frame()
                 self.ui.table_widget_data_from_data_frame.setColumnCount(self.data.shape[1])
                 self.ui.table_widget_data_from_data_frame.setRowCount(self.data.shape[0])
@@ -128,7 +125,7 @@ class OutlookForm(QMainWindow):
                 self.load_columns_to_list_of_variables()
                 QMessageBox.information(self, 'Info', 'Database successfully loaded!')
         except Exception:
-            QMessageBox.critical(self, 'Error', f'Something went wrong:\n\n{traceback.format_exc()}')
+            QMessageBox.critical(self, 'Error', f'Chose correct csv_file extension: .csv')
 
     def clean_data_from_data_frame(self) -> None:
         self.data = self.data.dropna(axis=1)
@@ -236,8 +233,8 @@ class OutlookForm(QMainWindow):
                     f'{mail}\n'
                     f'{"=" * 60}\n'
                 )
-        except:
-            QMessageBox.critical(self, 'Error', f'No data:\n\n{traceback.format_exc()}')
+        except Exception:
+            QMessageBox.critical(self, 'Error', f'No data.\nCreate email message with variables first.')
 
     def send_email(self):
         try:
@@ -260,8 +257,8 @@ class OutlookForm(QMainWindow):
                     f'{"=" * 60}\n'
                 )
                 time.sleep(1)
-        except:
-            QMessageBox.critical(self, 'Error', f'No data:\n\n{traceback.format_exc()}')
+        except Exception:
+            QMessageBox.critical(self, 'Error', f'No data.\nCreate email message with variables first.')
         finally:
             self.confirmation_dialog.close()
 

@@ -11,7 +11,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Dialog_Sending(object):
+class SendingDialogUI(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(803, 553)
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     Dialog = QtWidgets.QDialog()
-    ui = Ui_Dialog_Sending()
+    ui = SendingDialogUI()
     ui.setupUi(Dialog)
     Dialog.show()
     sys.exit(app.exec_())
