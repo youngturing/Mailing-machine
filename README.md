@@ -66,11 +66,13 @@ Application for mass email sending automation using Outlook. **In order to funct
 - paste selected variable to email body **between the <<>> signs**, for example: 
    
    ![img_10.png](static/img_readme/img_10.png)
+   
 - it will cause iteration over selected columns from database which outputs one message per one row from database with the data from chosen row
 11. Send email messages:
-   - if you want to test whether the data loads correctly to messages  click on **Test send** button
-   - if you want to send real messages click on **Send** button. Dialog with confirmation should pop up:
+  - if you want to test whether the data loads correctly to messages  click on **Test send** button
+  - if you want to send real messages click on **Send** button. Dialog with confirmation should pop up:
    
    ![img_11.png](static/img_readme/img_11.png)
-   - after clicking "OK" another window should open with printed email messages
-   - in case of error dialog with error message should open
+   
+  - after clicking "OK" another window should open with printed email messages
+  - in case of error dialog with error message should open
