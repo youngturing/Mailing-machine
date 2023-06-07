@@ -4,16 +4,17 @@ Application for mass email sending automation using Outlook. **In order to funct
 - Outlook desktop preinstalled
 - Windows OS 
 
-### Main use case:
+### Instruction:
 
 1. Download code from this repository
 1. Unpack the code and using cmd navigate to directory with code
-1. Type in `python outlook.py` to run the application
-1. Load data from `.csv` file:
+2. Type in `pip install -r requirements.txt` to install necessary packages used in this project.
+3. After successful installation type in `python outlook.py` to run the application
+4. Load data from `.csv` file:
    - click on "File" action button on the left corner of the main window
    - click "Open data file"
    - select file with data to load
-2. If data loads correctly, dialog with confirmation should pop up, in case of incorrect data there should be window with error message:
+5. If data loads correctly, dialog with confirmation should pop up, in case of incorrect data there should be window with error message:
 - **Data loaded correctly:**
    
    ![img.png](static/img_readme/img.png)
@@ -21,7 +22,7 @@ Application for mass email sending automation using Outlook. **In order to funct
    
    ![img_1.png](static/img_readme/img_1.png)
    
-- If loaded data has other type of separator than ";" sign, the "Change separator" action should be used:
+- If loaded data has other type of separator than "," sign, the "Change separator" action should be used:
   - click on the "Change separator" action button in the "File" action section. Dialog with line edit should open:  
    
    ![img_2.png](static/img_readme/img_2.png)
