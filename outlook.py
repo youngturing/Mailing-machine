@@ -102,7 +102,7 @@ class OutlookForm(QMainWindow):
             QApplication.clipboard().setText(item)
 
     def copy_addresses(self, item) -> None:
-        if self.ui.list_selected_variables.count() > 0:
+        if self.ui.list_widget_columns.count() > 0:
             addresses_column_name = self.get_clicked_item_from_list(item)
             self.ui.line_edit_addresses.setText(addresses_column_name)
 
