@@ -171,7 +171,7 @@ class MainWindowUI(object):
         self.push_button_test_send.setText(_translate(window_name, "Test send"))
         self.label_variables.setText(_translate(window_name, "Selected variables"))
         self.list_selected_variables.setToolTip(_translate(window_name, "<html><head/><body><p><br/></p></body></html>"))
-        self.label_columns.setText(_translate(window_name, "Columns"))
+        self.label_columns.setText(_translate(window_name, "Labels"))
         self.push_button_add_variable.setText(_translate(window_name, "Add"))
         self.push_button_remove_variable.setText(_translate(window_name, "Remove"))
         self.push_button_copy_selected.setText(_translate(window_name, "Copy selected"))

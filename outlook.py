@@ -26,13 +26,10 @@ class OutlookForm(QMainWindow):
         super().__init__()
         self.ui = MainWindowUI()
         self.ui.setupUi(self)
-
         self.ui.action_open_data_file.triggered.connect(self.load_data)
         self.ui.action_change_separator.triggered.connect(self.open_separator_dialog)
-
         self.ui.list_widget_columns.itemClicked.connect(self.get_clicked_item_from_list)
         self.ui.list_selected_variables.itemClicked.connect(self.get_clicked_item_from_list_of_variables)
-
         self.ui.push_button_add_variable.clicked.connect(self.add_data_to_listed_variables)
         self.ui.push_button_remove_variable.clicked.connect(self.remove_item_from_selected_variables)
         self.ui.push_button_clean_list.clicked.connect(self.clear_list_of_selected_items)
@@ -41,7 +38,6 @@ class OutlookForm(QMainWindow):
         self.ui.push_button_copy_selected.clicked.connect(self.copy_selected_value_from_list_of_variables)
         self.ui.push_button_copy_addresses.clicked.connect(self.copy_addresses)
         self.ui.font_combo_box.currentFontChanged.connect(self.change_font)
-
         self.confirmation_dialog = OutlookConfirmationDialog()
         self.sending_email_dialog = OutlookSendingInfo()
         self.separator_dialog = OutlookSeparator()
@@ -49,7 +45,6 @@ class OutlookForm(QMainWindow):
         self.confirmation_dialog.ui.push_button_cancel.clicked.connect(self.cancel_sending_email)
         self.separator_dialog.ui.push_button_ok_sep.clicked.connect(self.change_separator)
         self.separator_dialog.ui.push_button_cancel_sep.clicked.connect(self.cancel_changing_separator)
-
         self.data = None
         self.separator: str = ','
         self.show()
