@@ -8,7 +8,7 @@ from enum import Enum
 import pandas as pd
 import win32com.client as win32
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QFileDialog, QApplication, QTableWidgetItem, QLabel, QMainWindow, QMessageBox
+from PyQt5.QtWidgets import QFileDialog, QApplication, QTableWidgetItem, QMainWindow, QMessageBox
 
 from layout.outlook_window import MainWindowUI
 from outlook_dialog_confirmation import OutlookConfirmationDialog
@@ -104,7 +104,8 @@ class OutlookForm(QMainWindow):
     def copy_addresses(self, item) -> None:
         if self.ui.list_widget_columns.count() > 0:
             addresses_column_name = self.get_clicked_item_from_list(item)
-            self.ui.line_edit_addresses.setText(addresses_column_name)
+            if addresses_column_name:
+                self.ui.line_edit_addresses.setText(addresses_column_name)
 
     def load_data(self) -> None:
         try:
@@ -124,7 +125,7 @@ class OutlookForm(QMainWindow):
                         self.ui.table_widget_data_from_data_frame.setItem(row, column, new_item)
                 self.load_columns_to_list_of_variables()
                 QMessageBox.information(self, 'Info', 'Database successfully loaded!')
-        except Exception:
+        except UnicodeDecodeError:
             QMessageBox.critical(self, 'Error', 'Chose correct csv_file extension: .csv')
 
     def clean_data_from_data_frame(self) -> None:
@@ -143,8 +144,12 @@ class OutlookForm(QMainWindow):
                 self.ui.list_widget_columns.addItem(column)
 
     def get_clicked_item_from_list(self, item) -> Any:
-        item_from_list = self.ui.list_widget_columns.currentItem().text()
-        return item_from_list
+        try:
+            item_from_list = self.ui.list_widget_columns.currentItem().text()
+        except AttributeError:
+            return None
+        if item_from_list:
+            return item_from_list
 
     def get_clicked_item_from_list_of_variables(self, item) -> Any:
         item_from_list = self.ui.list_selected_variables.currentRow()
@@ -201,8 +206,8 @@ class OutlookForm(QMainWindow):
             email_body_dict['Body'] = email_body
         return list_of_mails
 
-    def add_attachements(self):
-        raise NotImplementedError('Adding attachements yet to be implemented - both in UI and code')
+    def add_attachments(self):
+        raise NotImplementedError('Adding attachments yet to be implemented - both in UI and code')
 
     def get_email_addresses(self) -> List[str]:
         column_with_addresses = self.ui.line_edit_addresses.text()
@@ -233,7 +238,7 @@ class OutlookForm(QMainWindow):
                     f'{mail}\n'
                     f'{"=" * 60}\n'
                 )
-        except Exception:
+        except TypeError:
             QMessageBox.critical(self, 'Error', 'No data.\nCreate email message with variables first.')
 
     def send_email(self):
@@ -248,7 +253,7 @@ class OutlookForm(QMainWindow):
                 mail_object.Subject = mail_subject
                 mail_object.Body = mail
                 mail_object._oleobj_.Invoke(*(64209, 0, 8, 0, send_account))  # Changing sender's address
-                mail_object.Send()  # Sending emails to to the list of users
+                mail_object.Send()  # Sending emails to the list of users
                 self.sending_email_dialog.ui.text_edit_mail_info.insertPlainText(
                     f'Email send to: {address}\n'
                     f'Body:\n'
@@ -257,7 +262,7 @@ class OutlookForm(QMainWindow):
                     f'{"=" * 60}\n'
                 )
                 time.sleep(1)
-        except Exception:
+        except TypeError:
             QMessageBox.critical(self, 'Error', 'No data.\nCreate email message with variables first.')
         finally:
             self.confirmation_dialog.close()

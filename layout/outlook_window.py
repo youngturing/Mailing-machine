@@ -16,7 +16,7 @@ class MainWindowUI(object):
         MainWindow.setObjectName("Outlook mass")
         MainWindow.resize(869, 897)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("C:/Users/miko5/Desktop/TDS/outlook/Mailing-machine/static/img/email_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("static/img/email_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
